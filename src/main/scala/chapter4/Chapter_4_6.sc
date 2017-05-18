@@ -21,7 +21,10 @@ for (person <- Seq(alice, bob, charlie)) {
 //  def unapply(p: Person): Option[Tuple3[String, Int, Address]] = Some((p.name, p.age, p.address))
 //}
 
-// case head +: tail 구문이 +:.unapply(collection) 메서드와 대응
+// case +:(head, tail) 구문이 +:.unapply(collection) 메서드와 대응
+// +: 객체의 단순화된 unapply 메소드는 아래와 같
+// def unapply[T, Coll](collection: Coll): Option[(T, Coll)]
+// T: head 타입, Coll: 출력 꼬리 컬렉션의 타입, head 와 tail 값의 tuple 값을 option 형태로 리턴
 def processSeq2[T](l: Seq[T]): Unit = l match {
   case +:(head, tail) =>
     printf("%s +: " , head)
@@ -46,23 +49,23 @@ Seq(with1, with2) foreach { w =>
 }
 
 // match-reverse-seq
-//val nonEmptyList = List(1, 2, 3, 4, 5)
-//val nonEmptyVector = Vector(1, 2, 3, 4, 5)
-//val nonEmptyMap = Map("one" -> 1, "two" -> 2, "three" -> 3)
-//
-//def reverseSeqToString[T](l: Seq[T]): String = l match {
-//  case prefix :+ end => reverseSeqToString(prefix) + s" : + $end"
-//  case Nil => "Nil"
-//}
-//
-//for (seq <- Seq(nonEmptyList, nonEmptyVector, nonEmptyMap.toSeq)) {
-//  println(reverseSeqToString(seq))
-//}
+val nonEmptyList = List(1, 2, 3, 4, 5)
+val nonEmptyVector = Vector(1, 2, 3, 4, 5)
+val nonEmptyMap = Map("one" -> 1, "two" -> 2, "three" -> 3)
+
+def reverseSeqToString[T](l: Seq[T]): String = l match {
+  case prefix :+ end => reverseSeqToString(prefix) + s" : + $end"
+  case Nil => "Nil"
+}
+
+for (seq <- Seq(nonEmptyList, nonEmptyVector, nonEmptyMap.toSeq)) {
+  println(reverseSeqToString(seq))
+}
 
 // match-seq-unapplySeq
-val nonEmptyList = List(1, 2, 3, 4, 5)
+// unapplySeq 메소드 정의
+// def unapplySeq[A](x: Seq[A]): Some[Seq[A]]
 val emptyList = Nil
-val nonEmptyMap = Map("one" -> 1, "two" -> 2, "three" -> 3)
 
 def windows[T](seq: Seq[T]): String = seq match {
   case Seq(head1, head2, _*) =>
@@ -75,3 +78,14 @@ def windows[T](seq: Seq[T]): String = seq match {
 for (seq <- Seq(nonEmptyList, emptyList, nonEmptyMap.toSeq)) {
   println(windows(seq))
 }
+
+def windows2[T](seq: Seq[T]): String = seq match {
+  case head1 +: head2 +: tail => s"($head1, $head2), " + windows2(seq.tail)
+  case head1 +: tail => s"($head1, _), " + windows2(tail)
+  case Nil => "Nil"
+}
+
+for (seq <- Seq(nonEmptyList, emptyList, nonEmptyMap.toSeq)) {
+  println(windows2(seq))
+}
+
