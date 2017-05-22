@@ -13,7 +13,7 @@ val catalog = Seq(
   "Book: title=Programming Scala Second Edition, author=Dean Wampler",
   "Magazine: title=The New Yorker, issue=January 2014",
   "Unknown: text=Who put this here??",
-  "abcdefghijklmnop",
+  "abcdefghijk lmnop",
   "0192837465"
 )
 
