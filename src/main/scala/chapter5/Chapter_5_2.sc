@@ -12,13 +12,6 @@ import scala.concurrent.ExecutionContext.Implicits.global
 // 5.2.2 사용 가능한 기능 제어
 // 암시적 사용자 세션 인자를 사용해서 특정 API를 호출하거나 접근 가능한 메뉴를 제한
 // 암시적으로 처리되기 때문에 user 정보를 매번 parameter로 주고 받을 필요 없이 접근 가능
-//class UserInfo
-//{
-//  implicit var permssion: String = "No permission"
-//  def getPermission: String = {permssion}
-//  def setPermssion(perm: String) : Unit = {permssion = perm}
-//}
-
 class UserInfo(val preference: String)
 
 def getMenu(implicit userInfo: UserInfo) = userInfo.preference match {
