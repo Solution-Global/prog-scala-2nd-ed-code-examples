@@ -26,11 +26,12 @@ def getMenu(implicit userInfo: UserInfo) = userInfo.preference match {
   case _ => println("UserMenu")
 }
 
-object userInfo {
+object UserInfo {
   implicit val userInfo = new UserInfo("UserInfo")
 }
 
-import userInfo._
+import UserInfo._
 getMenu
+
 val adminInfo = new UserInfo("Admin")
 getMenu(adminInfo)
