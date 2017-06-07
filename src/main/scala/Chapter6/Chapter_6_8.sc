@@ -26,7 +26,7 @@ stateCapitals foreach { case (k, v) => println(k + ": " + v) }
 // 6.8.2 연관시키기 (map)
 ///////////////////////////////////////
 
-// map method는 원래 콜렉션과 같은 크기, 같은 데이터 구의 새로운 콜렉션을 반환한다.
+// map method는 원래 콜렉션과 같은 크기, 같은 데이터 구조의 새로운 콜렉션을 반환한다.
 // 원래 콜렉션의 원소들에 특정 함수를 적용하여 얻어진 결과들을 리턴
 
 val nums: Seq[Int] = List(1, 2, 3, 4, 5, 6, 7)
@@ -36,10 +36,17 @@ val strs: Seq[String] = nums.map(n => n.toString)
 
 // src/main/scala/progscala2/fp/combinators/combinators.sc
 
+// List의 map의 정의는 아래와 같다
+// final def map[B](f: (A) ⇒ B): List[B]
+
+// 하지만 map의 실제 동작은 List[A] => List[B]이다(같은 크기, 같은 데이터 구조의 컬렉션 반환)
+// 이런 동작은 list.map(f) 와 같은 표현에 의해 가려진다
+
 object Combinators1 {
   def map[A,B](list: List[A])(f: (A) ⇒ B): List[B] = list map f
 }
 
+// 부분 적용을 위해 인자 목록 바꿈
 object Combinators {
   def map[A,B](f: (A) ⇒ B)(list: List[A]): List[B] = list map f
 }
@@ -47,10 +54,10 @@ object Combinators {
 val intToString: (Int) => String = (i:Int) => s"N=$i"
 // Result: intToString: Int => String = <function1>
 
-val flist: (List[Int]) => List[String] = Combinators.map(intToString) _
+// flist : Comninators.map을 부분 적용하여 만든 새로운 함수
+// Int => String 인 intToString을 List[Int] => List[String]인 flist로 lift
+val flist: (List[Int]) => List[String] = Combinators.map(intToString)(_)
 // Result: flist: List[Int] => List[String] = <function1>
-
-val flist2: (List[Int]) => List[String] = Combinators.map(intToString)
 
 val list: Seq[String] = flist(List(1, 2, 3, 4))
 // Result: list: List[String] = List(N=1, N=2, N=3, N=4)
@@ -120,29 +127,29 @@ List(1,2,3,4,5,6) reduce (_ * _)
 
 // 기준(씨앗값)은 10
 // 씨앗값에 1부터 6까지 곱한 수를 반환
-List(1).fold (10) (_ * _)
-List(1,2).fold (10) (_ * _)
-List(1,2,3).fold (10) (_ * _)
-List(1,2,3,4).fold (10) (_ * _)
-List(1,2,3,4,5).fold (10) (_ * _)
-List(1,2,3,4,5,6).fold (10) (_ * _)
+List(1).fold (10) (_ * _)           // 10 * 1
+List(1,2).fold (10) (_ * _)         // 10 * 1 * 2
+List(1,2,3).fold (10) (_ * _)       // 10 * 1 * 2 * 3
+List(1,2,3,4).fold (10) (_ * _)     // 10 * 1 * 2 * 3 * 4
+List(1,2,3,4,5).fold (10) (_ * _)   // 10 * 1 * 2 * 3 * 4 * 5
+List(1,2,3,4,5,6).fold (10) (_ * _) // 10 * 1 * 2 * 3 * 4 * 5 * 6
 
 (List(1,2,3,4,5,6) fold 10) (_ * _)
 
-val fold1 = (List(1,2,3,4,5,6) fold 10) _
+val fold1 = (List(1,2,3,4,5,6) fold 10) _ // 부분 적용 함수 생성
 fold1(_ * _)
 
-// fold에 빈 콜렉션을 사용할 경우 기준값이 반환
+// fold에 빈 콜렉션을 사용할 경우 기준값이 그대로 반환
 (List.empty[Int] fold 10) (_ + _)
 
-// reduce에 빈 콜렉션을 사용할 경우 exception 던짐
+// reduce에 빈 콜렉션을 사용할 경우 exception 던짐(fold와 달리 기준값이 없음)
 try {
   List.empty[Int] reduce (_ + _)
 } catch {
   case e: java.lang.UnsupportedOperationException => e
 }
 
-// reduceOption을 사용하면 Option으로 값을 반환받을 수 있으므로 Empty collection을 위한 추가적인 처리를 하지 않아도 된다
+// reduceOption을 사용하면 Option으로 값을 반환받을 수 있으므로 Empty collection을 위한 추가적인 에러 처리를 하지 않아도 된다
 List.empty[Int] reduceOption (_ + _)
 List(1,2,3,4,5,6) reduceOption (_ * _)
 
