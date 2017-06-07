@@ -1,7 +1,7 @@
 import scala.annotation.tailrec
 
 // 꼬리호출 재귀
-// 컴파일러가 재귀를 루프로 변환
+// 컴파일러가 재귀를 루프로 변환..
 def factorial(i: BigInt): BigInt = {
   @tailrec
   def fact(i: BigInt, accumulator: BigInt): BigInt =
