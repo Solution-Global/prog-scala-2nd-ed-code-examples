@@ -5,5 +5,7 @@ snapshots
 project/project
 project/target
 target
+*.iml
 */.idea/**
-.idea/
+.idea/**
+.idea
