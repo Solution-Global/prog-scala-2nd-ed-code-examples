@@ -54,10 +54,11 @@ object Combinators {
 val intToString: (Int) => String = (i:Int) => s"N=$i"
 // Result: intToString: Int => String = <function1>
 
-// flist : Comninators.map을 부분 적용하여 만든 새로운 함수
-// Int => String 인 intToString을 List[Int] => List[String]인 flist로 lift
-val flist: (List[Int]) => List[String] = Combinators.map(intToString)(_)
+val flist: (List[Int]) => List[String] = Combinators.map(intToString)(_) // Combinators의 map의 첫번째 param만을 적용한 부분 함수로 새롭게 정의
 // Result: flist: List[Int] => List[String] = <function1>
+
+// map은 같은 크기의 새로운 컬렉션을 반환하는 메소드이다.
+// 즉, map을 사용함으로써 Int => String 의 함수를
 
 val list: Seq[String] = flist(List(1, 2, 3, 4))
 // Result: list: List[String] = List(N=1, N=2, N=3, N=4)
